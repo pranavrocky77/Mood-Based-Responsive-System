@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOOD RESPONSIVE SMART HOME</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            color: #0a0909;
+            display: flex;
+            font-weight: bold;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bg-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .bg-slider img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .bg-slider img.active {
+            opacity: 1;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-align: center;
+            animation: fadeIn 2s ease-in-out;
+            font-weight: 700;
+        }
+
+        .proverb {
+            font-size: 1.5rem;
+            margin-top: 15px;
+            animation: fadeIn 3s ease-in-out;
+            font-style: italic;
+            color: #3d0057;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 223, 0, 0.7);
+        }
+
+        .auth-links {
+            position: absolute;
+            top: 20px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .auth-links a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 1.2rem;
+            padding: 12px 25px;
+            margin: 0 20px;
+            border: 2px solid #fff;
+            border-radius: 30px;
+            background-color: transparent;
+            transition: all 0.4s ease-in-out;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .auth-links a::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: #fdfbfb;
+            transition: all 0.4s ease-in-out;
+            z-index: -1;
+        }
+
+        .auth-links a:hover::before {
+            left: 0;
+        }
+
+        .auth-links a:hover {
+            color: #011a48;
+        }
+
+        .main-box {
+            position: relative;
+            text-align: center;
+            animation: floatEffect 5s infinite alternate ease-in-out;
+        }
+
+        .slide-box {
+            margin-top: 30px;
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.5rem;
+            border: 2px solid rgb(2, 2, 2);
+            animation: pulseGlow 2s infinite alternate;
+            text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes floatEffect {
+            0% { transform: translateY(-10px); }
+            100% { transform: translateY(10px); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.5); }
+            100% { box-shadow: 0px 0px 30px rgba(77, 76, 76, 0.9); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-slider">
+        <img src="https://png.pngtree.com/thumb_back/fh260/background/20230717/pngtree-d-rendering-of-a-white-sofa-arch-living-room-with-neon-image_3895498.jpg">
+        <img src="https://img.freepik.com/premium-photo/smart-home-with-full-automation-solid-color-background-4k-ultra-hd_964851-139791.jpg">
+        <img src="https://img.freepik.com/premium-photo/smart-home-with-full-automation-solid-color-background-4k-ultra-hd_964851-139357.jpg">
+    </div>
+
+    <div class="auth-links">
+        <a href="/signup">Sign Up</a>
+        <a href="/login">Login</a>
+    </div>
+
+    <div class="main-box">
+        <h1 style="color:white">Smart Home Access</h1>
+        <div class="proverb">"Mood Meets Music, Lights Follow You"</div>
+        <div class="slide-box">
+            Feel the Vibes, See the Lights, Hear the Music!!
+        </div>
+    </div>
+
+    <script>
+        let slides = document.querySelectorAll('.bg-slider img');
+        let currentIndex = 0;
+
+        function changeSlide() {
+            slides[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % slides.length;
+            slides[currentIndex].classList.add('active');
+        }
+
+        setInterval(changeSlide, 3000);
+    </script>
+
+</body>
+</html>

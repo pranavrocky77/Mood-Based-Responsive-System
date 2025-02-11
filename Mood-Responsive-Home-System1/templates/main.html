@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LumiVibe: Mood Responsive Smart Home</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* --- Existing LumiVibe Styles --- */
+        /* Background Gradient Animation */
+        @keyframes gradientBG {
+            0% {
+                background: linear-gradient(45deg, #0f2027, #203a43, #2c5364);
+            }
+
+            50% {
+                background: linear-gradient(45deg, #0f2027, #203a43, #2c5364);
+            }
+
+            100% {
+                background: linear-gradient(45deg, #0f2027, #203a43, #2c5364);
+            }
+        }
+
+        body {
+            animation: gradientBG 8s infinite alternate ease-in-out;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background-color: #222;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            transition: background 1s ease-in-out;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Webcam Section */
+        .webcam-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        #video {
+            width: 50%;
+            /* Reduced size */
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.3);
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0;
+        }
+
+        /* Content Layout */
+        .main-content {
+            display: flex;
+            width: 90%;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        /* Buttons on the Right */
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        /* Icon Button Styling */
+        .icon-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            font-size: 24px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .icon-button:hover {
+            transform: scale(1.1);
+            background: rgba(255, 87, 34, 0.8);
+        }
+
+        /* Mood Chart Container (Initially Hidden) */
+        #moodChartContainer {
+            width: 50%;
+            max-width: 500px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.3);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            display: none;
+            /* Initially hidden */
+        }
+
+        canvas {
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        /* Make text more readable */
+        p,
+        li {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        /* Spacing for lists */
+        ul,
+        ol {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* Button text for clarity */
+        .icon-button {
+            font-size: 1.5em;
+            /* Increase icon size */
+            padding: 15px;
+            /* Add padding for better touch/click area */
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>LumiVibe: Mood Responsive Smart Home</h1>
+
+    <!-- Webcam Section -->
+    <div class="webcam-container">
+        <img id="video" src="/video_feed" alt="Webcam Feed">
+    </div>
+
+    <!-- Main Content: Mood Chart on Left, Buttons on Right -->
+    <div class="main-content">
+
+        <!-- Mood Chart (Hidden Initially) -->
+        <div id="moodChartContainer">
+            <h2>Mood Trends</h2>
+            <canvas id="moodChart"></canvas>
+        </div>
+
+        <!-- Buttons (Right Side) -->
+        <div class="button-container">
+            <button class="icon-button" onclick="openWebcam()">💡</button>
+            <!-- Light -->
+            <button class="icon-button" onclick="closeCam()">📹❌</button>
+            <!-- Close Cam -->
+            <button class="icon-button" onclick="playMusic()">🎵</button>
+            <!-- Play Music -->
+            <button class="icon-button" onclick="resetLight()">🔄</button>
+            <!-- Reset Light -->
+            <button class="icon-button" onclick="toggleMoodChart()">📊</button>
+            <!-- Show Stats -->
+            <button class="icon-button" onclick="window.location.href='/chatbot'">🤖💬</button>
+            <!-- Chatbot -->
+        </div>
+
+    </div>
+
+
+    <script>
+        /* --- Existing LumiVibe JavaScript --- */
+        function openWebcam() {
+            let videoElement = document.getElementById('video');
+            videoElement.style.opacity = "1";
+
+            fetch('/open_cam', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    fetch('/change_light', {
+                            method: 'POST'
+                        })
+                        .then(response => response.json())
+                        .then(data => console.log(data));
+                });
+        }
+
+        function closeCam() {
+            let videoElement = document.getElementById('video');
+            videoElement.style.opacity = "0";
+
+            fetch('/close_cam', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => console.log(data));
+        }
+
+        function resetLight() {
+            fetch('/normal_light', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => console.log(data));
+        }
+
+        function playMusic() {
+            fetch('/play_music', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => console.log(data));
+        }
+
+        // Mood Chart Visibility Toggle
+        function toggleMoodChart() {
+            let chartContainer = document.getElementById('moodChartContainer');
+            if (chartContainer.style.display === "none" || chartContainer.style.opacity === "0") {
+                fetchMoodLog();
+                chartContainer.style.display = "block";
+                setTimeout(() => {
+                    chartContainer.style.opacity = "1";
+                    chartContainer.style.transform = "translateY(0)";
+                }, 100);
+            } else {
+                chartContainer.style.opacity = "0";
+                chartContainer.style.transform = "translateY(20px)";
+                setTimeout(() => {
+                    chartContainer.style.display = "none";
+                }, 500);
+            }
+        }
+
+        // Mood Logging & Chart Update
+        let moodChart;
+
+        function fetchMoodLog() {
+            fetch('/get_mood_log', {
+                    method: 'GET'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Mood Log:", data);
+                    updateMoodGraph(data);
+                });
+        }
+
+        function updateMoodGraph(moodData) {
+            if (!moodData || moodData.length === 0) {
+                console.log("No mood data available.");
+                return;
+            }
+
+            const labels = moodData.map(entry => entry.time);
+            const emotions = moodData.map(entry => entry.mood);
+
+            if (!moodChart) {
+                const ctx = document.getElementById('moodChart').getContext('2d');
+                moodChart = new Chart(ctx, {
+                    type: 'bar',
+                    // Changed to bar for better visualization
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Detected Emotion',
+                            data: emotions.map(emotion => moodToNumeric(emotion)),
+                            // Keep numerical values for plotting
+                            backgroundColor: 'rgba(255, 87, 34, 0.5)',
+                            borderColor: 'rgba(255, 87, 34, 1)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: function (value) {
+                                        return numericToMood(value); // Convert number back to emotion for display
+                                    }
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            } else {
+                moodChart.data.labels = labels;
+                moodChart.data.datasets[0].data = emotions.map(emotion => moodToNumeric(emotion));
+                moodChart.update();
+            }
+        }
+
+        function moodToNumeric(mood) {
+            const moodMap = {
+                "happy": 5,
+                "sad": 1,
+                "angry": 3,
+                "surprise": 4,
+                "fear": 2,
+                "disgust": 3,
+                "neutral": 3
+            };
+            return moodMap[mood] || 3;
+        }
+
+        function numericToMood(value) {
+            const reverseMoodMap = {
+                5: "Happy 😊",
+                1: "Sad 😢",
+                3: "Angry 😡",
+                4: "Surprise 😮",
+                2: "Fear 😨",
+                3: "Disgust 🤢",
+                3: "Neutral 😐"
+            };
+            return reverseMoodMap[value] || "Unknown";
+        }
+    </script>
+
+</body>
+
+</html>
